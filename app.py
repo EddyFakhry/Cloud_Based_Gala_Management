@@ -48,7 +48,7 @@ def logout():
 
 @app.route("/menu")
 def menu():
-    return render_template('menu.html')
+    return render_template('admin_menu.html')
 
 
 @app.route('/')
@@ -88,7 +88,7 @@ def upload():
             return 'Invalid file type received, expected .zip and .mdb files. Please go back and try again'
         return _load_data_from_files(mdb_file, zip_file)
     else:
-        return render_template('upload.html')
+        return render_template('upload_files.html')
 
 
 
@@ -96,7 +96,7 @@ def _load_data_from_files(mdb_file, zip_file):
     try:
         o = Objectmaker(os.path.join(constants.UPLOAD_PATH, mdb_file), os.path.join(constants.UPLOAD_PATH, zip_file))
     except Exception as e:
-        return render_template('output.html', data='Could not read mdb or zip file. <br/>Error: ' + str(e))
+        return render_template('gala_details.html', data='Could not read mdb or zip file. <br/>Error: ' + str(e))
     data = o.get_data()
     swimmers = data.pop('swimmers')
     with Mongo(db_config) as db:
@@ -109,7 +109,7 @@ def _load_data_from_files(mdb_file, zip_file):
 
     for heat in data["heats"]:
         heat["id"] = int(heat["id"])
-    return render_template("output.html", data=data)
+    return render_template("gala_details.html", data=data)
 
 
 @app.route('/send/<club_id>/<gala_id>')
@@ -163,7 +163,7 @@ def external_form(gala_id):
             "gala" :  filter_heats(gala, swimmer)
         }
         data.append(d)
-    return render_template("multipleforms.html", data=data)
+    return render_template("print_forms.html", data=data)
 
 
 
@@ -230,7 +230,7 @@ def get_entries(gala_id):
                     heat_with_swimmers["swimmers"].append(swimmer)
             heat_with_swimmers["id"] = int(heat_with_swimmers["id"])
             heats.append(heat_with_swimmers)
-        return render_template("entries.html", gala=gala, heats=heats)
+        return render_template("gala_entries.html", gala=gala, heats=heats)
     return "Invalid Gala Id"
 
 
@@ -238,7 +238,7 @@ def get_entries(gala_id):
 @check_admin_login
 def registration():
     if request.method == "GET":
-        return render_template("manualform.html")
+        return render_template("manual_entry_form.html")
 
     swimmer_id = request.form['swimmer_id']
     gala_id = request.form['gala_id']
@@ -260,7 +260,7 @@ def registration():
         invalid["message"] += "Swimmer ID Not Found"
 
     if invalid["value"]:
-        return render_template("manualform.html", invalid=invalid, swimmer_id=swimmer_id, gala_id=gala_id)
+        return render_template("manual_entry_form.html", invalid=invalid, swimmer_id=swimmer_id, gala_id=gala_id)
     else:
         gala = filter_heats(gala, swimmer)
         return render_template("form.html", swimmer=swimmer, gala=gala)
