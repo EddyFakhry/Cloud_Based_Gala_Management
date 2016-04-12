@@ -1,0 +1,8 @@
+Hello {{ first_name }},
+It's time for a new Gala !
+Click this link to view your personalised entry form:
+{{ link }}
+A confirmation e-mail will be sent to this address once registered.
+
+Regards,
+{{club_id}} gala secretary

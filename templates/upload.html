@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+
+      <div class="container">
+          <div class="wrapper">
+          <div class="row text-center" >
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="section-title center">
+                        <h2>upload <strong>required files</strong></h2>
+                        <div class="line">
+                            <hr>
+                        </div>
+                        <div class="clearfix"></div>
+                        <form method="POST" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="zip_file">Gala Zip folder: </label>
+                                        <input type="file" id="zip_file" name="zip_file" accept=".zip"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="mdb_file">MS Access Export Folder: </label>
+                                        <input type="file" id="mdb_file" name="mdb_file" accept=".mdb"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="submit"/>
+                        </form>
+                    </div>
+                </div>
+          </div>
+      </div>
+  </div>
+{% endblock %}

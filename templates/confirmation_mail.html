@@ -1,0 +1,43 @@
+<!doctype html>
+<head>
+</head>
+<body>
+<p>Hello {{ swimmer.first }},</p>
+<p>You have subscribed to the following events</p>
+    <table class="table table-hover">
+            <tr>
+                <th>ID</th>
+                <th>Distance</th>
+                <th>Dives</th>
+                <th>Gender</th>
+                <th>Individual/relay</th>
+                <th>Max Age</th>
+                <th>Min Age</th>
+                <th>Style</th>
+                <th>Time</th>
+                <th>Type</th>
+            </tr>
+            {% for heat in heats |sort(attribute='id') %}
+                <tr>
+                    <td>{{ heat["id"] }}</td>
+                    <td>{{ heat["distance"] }}</td>
+                    <td>{{ heat["dives"] }}</td>
+                    <td>{{ heat["gender"] }}</td>
+                    <td>{{ heat["individual/relay"] }}</td>
+                    <td>{{ heat["maxage"] }}</td>
+                    <td>{{ heat["minage"] }}</td>
+                    <td>{{ heat["style"] }}</td>
+                    <td>{{ heat["time"] }}</td>
+                    <td>{{ heat["type"] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+<p>Click this link if you would like to make any changes:
+    <a href="{{ link }}">{{ link }}</a></p>
+<p>This is a confirmation e-mail sent to you automatically. Do not reply to this e-mail</p>
+<br/>
+<p>Regards,<br/>
+    {{ club_id }} gala secretary</p>
+<p>Automated Response</p>
+</body>
+</html>

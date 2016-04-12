@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+
+
+<div class="container-fluid">
+
+    <div class="row" style="margin-top:20px">
+        <div class="text-center">
+            <h1>Event : {{ data["title"] }},
+                <small>{{ data["date"] }} </small>
+            </h1>
+        </div>
+    </div>
+
+
+
+    <div class="row" style="margin-top:30px">
+        <div class="center-block text-center">
+            <a href="/send/{{ data.club.id }}/{{ data.title }}" type="submit" class="btn btn-default tf-btn" id="spinner-btn" style="float: none">Send Email</a>
+        </div>
+
+    </div>
+
+    <div class="row" style="margin-top:30px">
+
+        <table class="table table-hover">
+            <tr>
+                <th>ID</th>
+                <th>Distance</th>
+                <th>Dives</th>
+                <th>Gender</th>
+                <th>Individual/relay</th>
+                <th>Max Age</th>
+                <th>Min Age</th>
+                <th>Style</th>
+                <th>Time</th>
+                <th>Type</th>
+            </tr>
+
+            {% for heat in data["heats"]|sort(attribute='id') %}
+                <tr>
+                    <td>{{ heat["id"] }}</td>
+                    <td>{{ heat["distance"] }}</td>
+                    <td>{{ heat["dives"] }}</td>
+                    <td>{{ heat["gender"] }}</td>
+                    <td>{{ heat["individual/relay"] }}</td>
+                    <td>{{ heat["maxage"] }}</td>
+                    <td>{{ heat["minage"] }}</td>
+                    <td>{{ heat["style"] }}</td>
+                    <td>{{ heat["time"] }}</td>
+                    <td>{{ heat["type"] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+
+    </div>
+
+
+<div id="spinner">
+</div>
+
+</div>
+    <script>
+
+
+        var myEl = document.getElementById('spinner-btn');
+
+    function enable_spinner(){
+     document.getElementById('spinner').innerHTML = '<div class="spinner-global"><div class ="spinner-img fa fa-spinner fa-spin fa-5x"></div></div>'
+    }
+
+    myEl.addEventListener('click', function () {
+        enable_spinner()
+    }, false);
+    </script>
+
+{% endblock %}
+

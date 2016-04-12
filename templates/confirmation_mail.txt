@@ -1,0 +1,9 @@
+Hello {{ first_name }},
+You have subscribed to an event
+Click this link if you want to make any changes:
+{{ link }}
+This is a confirmation e-mail sent to you automatically. Done not reply to this e-mail.
+
+Regards,
+{{club_id}} gala secretary
+Automated Response

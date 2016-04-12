@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+
+
+<form method="POST" action="/registration">
+
+    <div class="row" style="margin: 20px 0 50px 0">
+        <div class="text-center">
+            <h1>Swimmer heat Registration</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4">
+            <label class="control-label" for="inputID">Swimmer ID</label>
+            <input type="text"
+                   id="inputID"
+                   name="swimmer_id"
+                   class="form-control"
+                   value="{% if swimmer_id is defined %}{{ swimmer_id }}{% endif %}"
+                   required>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="form-group col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4">
+            <label class="control-label" for="inputGala">Gala ID</label>
+            <input type="text"
+                   id="inputGala"
+                   name="gala_id"
+                   class="form-control"
+                   value="{% if gala_id is defined%}{{ gala_id }}{% endif %}"
+                   required>
+        </div>
+    </div>
+
+
+    {% if invalid is defined and invalid.value is defined and invalid.value == True %}
+    <div class="row" style="margin: 20px 0 20px 0">
+        <div class=" form-group center-block text-center">
+                <span class=" alert alert-danger ">
+                    <strong>Invalid : </strong>{{ invalid.message }}
+                </span>
+        </div>
+    </div>
+    {% endif %}
+
+
+
+    <div class="row" style="margin: 20px 0 20px 0">
+        <div class="form-group center-block">
+            <div class="text-center">
+                <input class="btn btn-lg btn-primary"
+                        type="submit">
+            </div>
+        </div>
+    </div>
+
+</form>
+
+{% endblock %}

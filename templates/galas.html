@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+
+    <div class="container-fluid">
+
+
+        <div class="row" style="margin: 20px 0 50px 0">
+            <div class="text-center">
+                <h1>Galas</h1>
+            </div>
+        </div>
+
+
+        <div class="row" style="margin-top:30px">
+
+            <table class="table table-hover">
+                <tr>
+                    <th>Title</th>
+                    <th>Club Name</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                </tr>
+
+                {% for gala in galas %}
+                    <tr>
+                        <td><a href="/entries/{{ gala["title"] }}">{{ gala["title"] }}</a></td>
+                        <td>{{ gala.club.name }}</td>
+                        <td>{{ gala.location }}</td>
+                        <td>{{ gala.date }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+
+        </div>
+
+
+    </div>
+{% endblock %}

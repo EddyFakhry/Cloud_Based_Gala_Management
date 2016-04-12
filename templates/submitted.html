@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Basic Page Needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <!--[if IE]><meta http-equiv="x-ua-compatible" content="IE=9" /><![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GoSwimIreland</title>
+
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.css') }}">
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static',filename='fonts/font-awesome/css/font-awesome.css') }}">
+
+
+    <!-- Stylesheet
+    ================================================== -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/responsive.css') }}">
+
+
+    <script type="text/javascript" src="{{ url_for('static',filename='js/modernizr.custom.js') }}"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+
+<div class="container-fluid">
+
+    <div class="row" style="margin-top:20px">
+        <div class="text-center">
+            <h1>Event : {{ gala["title"] }},
+                <small>{{ gala["date"] }} </small>
+            </h1>
+            <br>
+            <h2> {{ swimmer.last }}, {{ swimmer.first }}</h2>
+                    <br>
+
+            <h2>Swimmer ID : {{ swimmer.swimmer_id}} </h2>
+
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 30px;">
+        <div class="col-sm-offset-4 col-sm-4 text-center">
+            {% if swimmer.email %}
+            <h3>You have submitted the following heats.
+                <br>We have sent a confirmation on your email address.</h3>
+            {% else %}
+             <h3>You have submitted the following heats for the swimmer</h3>
+            {% endif %}
+        </div>
+
+    </div>
+
+
+        <div class="row" style="margin-top:30px">
+
+            <table class="table table-hover">
+                <tr>
+                    <th>ID</th>
+                    <th>Distance</th>
+                    <th>Dives</th>
+                    <th>Gender</th>
+                    <th>Individual/relay</th>
+                    <th>Max Age</th>
+                    <th>Min Age</th>
+                    <th>Style</th>
+                    <th>Time</th>
+                    <th>Type</th>
+                </tr>
+
+                {% for heat in heats |sort(attribute='id') %}
+                    <tr>
+                        <td>{{ heat["id"] }}</td>
+                        <td>{{ heat["distance"] }}</td>
+                        <td>{{ heat["dives"] }}</td>
+                        <td>{{ heat["gender"] }}</td>
+                        <td>{{ heat["individual/relay"] }}</td>
+                        <td>{{ heat["maxage"] }}</td>
+                        <td>{{ heat["minage"] }}</td>
+                        <td>{{ heat["style"] }}</td>
+                        <td>{{ heat["time"] }}</td>
+                        <td>{{ heat["type"] }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+        </div>
+
+
+
+
+
+</div>
+
+</body>
+</html>

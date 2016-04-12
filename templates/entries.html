@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+
+    <div class="container-fluid">
+
+        <div class="row" style="margin-top:20px">
+            <div class="text-center">
+                <h1>Event : {{ gala["title"] }}       <small>{{ gala["date"].strftime('%d-%m-%Y')}} </small></h1>
+            </div>
+        </div>
+        <div class="row " style="margin-top:30px;text-align:center;">
+            <div class="center-block text-center inline-block">
+                <a href="/form/external/{{ gala.title }}" target="_blank" class="btn btn-default tf-btn" style="float: none"><i class="fa fa-print"></i> Print all forms</a>
+            </div>
+
+            <form method="GET" action="/delete/{{ gala.title }}" class="inline-block">
+                <div class="row" style="margin:30px 0 30px 0">
+                    <div class="center-block text-center">
+                        <input class="btn btn-danger tf-btn" style="float: none" type="submit" value="Remove Gala">
+                    </div>
+                </div>
+            </form>
+
+            <form method="GET" action="/download/{{ gala.title }}" class="inline-block">
+                <div class="row" style="margin:30px 0 30px 0">
+                    <div class="center-block text-center">
+                        <input class="btn btn-success tf-btn" style="float: none" type="submit" value="Download Entry File">
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% for heat in heats|sort(attribute='id') %}
+
+            <div class="row" style="margin-top:75px">
+
+                <h2 class="well text-center">Heat </h2>
+
+                <table class="table table-hover table-striped">
+                    <tr>
+                        <th>ID</th>
+                        <th>Distance</th>
+                        <th>Dives</th>
+                        <th>Gender</th>
+                        <th>Individual/relay</th>
+                        <th>Max Age</th>
+                        <th>Min Age</th>
+                        <th>Style</th>
+                        <th>Time</th>
+                        <th>Type</th>
+                    </tr>
+
+                    <tr>
+                        <td>{{ heat["id"] }}</td>
+                        <td>{{ heat["distance"] }}</td>
+                        <td>{{ heat["dives"] }}</td>
+                        <td>{{ heat["gender"] }}</td>
+                        <td>{{ heat["individual/relay"] }}</td>
+                        <td>{{ heat["maxage"] }}</td>
+                        <td>{{ heat["minage"] }}</td>
+                        <td>{{ heat["style"] }}</td>
+                        <td>{{ heat["time"] }}</td>
+                        <td>{{ heat["type"] }}</td>
+
+                    </tr>
+                </table>
+
+            </div>
+
+            <div class="row" style="margin-bottom: 50px">
+
+                <h3 class="well text-center">Swimmers </h3>
+                <table class="table table-hover">
+                    <tr>
+                        <th>Swimmer ID</th>
+                        <th>Club ID</th>
+                        <th>DOB</th>
+                        <th>First</th>
+                        <th>Last</th>
+                        <th>Sex</th>
+                    </tr>
+
+                    {% for swimmer in heat.swimmers%}
+                        <tr>
+                            <td>{{ swimmer.swimmer_id }}</td>
+                            <td>{{ swimmer.club_id }}</td>
+                            <td>{{ swimmer.dob }}</td>
+                            <td>{{ swimmer.first }}</td>
+                            <td>{{ swimmer.last }}</td>
+                            <td>{{ swimmer.sex }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <hr>
+
+        {% endfor %}
+
+
+
+
+
+
+
+    </div>
+
+{% endblock %}
