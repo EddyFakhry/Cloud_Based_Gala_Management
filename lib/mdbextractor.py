@@ -1,7 +1,14 @@
+"""
+AUTHOR: EDDY FAKHRY
+DATE:   15/10/2016
+"""
 import csv, pyodbc
 
 
 class mdbextractor:
+    """
+    Retrieve data from Microsoft Access database
+    """
     def __init__(self,mdb_file):
         self._mdb_file = mdb_file
 

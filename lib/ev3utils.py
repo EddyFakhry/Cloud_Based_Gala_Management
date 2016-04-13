@@ -1,9 +1,16 @@
+"""
+AUTHOR: EDDY FAKHRY
+DATE:   15/10/2016
+"""
 import csv
 from zipfile import ZipFile
 import tempfile
 
 
-class Ev3Reader():
+class Ev3Reader:
+    """
+    Retrieve the data from the EV3 file
+    """
     TEMP_DIR = "./temp/"
 
     def __init__(self, file):
@@ -13,6 +20,9 @@ class Ev3Reader():
         self._parse()
 
     def _parse(self):
+        """
+        Find and parse EV3 file after unzipping invitation folder
+        """
         zf = ZipFile(self.file, 'r')
         suffix = "ev3"
         tempdir = tempfile.TemporaryDirectory()
@@ -25,11 +35,3 @@ class Ev3Reader():
                     for row in eventreader:
                         self.body.append(row)
 
-
-# if __name__ == '__main__':
-#     ev3_reader = Ev3Reader('MeetEvent.zip')
-#     header = ev3_reader.header
-#     print(header)
-#     print ("Event Title: " + header[0] + " Location: " + header[1] + " Date: " + header[2])
-#     for row in ev3_reader.body:
-#         print ("Event: #" + row[0] + "    Distance: " + row[8] + "     Category: " + row[5] + "     Event Time: " + row[24])

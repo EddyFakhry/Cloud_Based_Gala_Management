@@ -1,19 +1,31 @@
+"""
+AUTHOR: EDDY FAKHRY
+DATE:   15/10/2016
+"""
 from abc import abstractmethod, ABCMeta
 from lib.mongo import Mongo
 from time import strftime
 
 
 def checksum(line):
+    """
+    Calculate the Checksum of a line
+    :param line:HY3 full line
+    :return: checksum
+    """
     odd = 0
     even = 0
     for i in range(0, len(line)):
         if i % 2 == 1:
-            odd += ord(line[i]) * 2 #sum value of all characters with an odd index and multiply by 2
+            #sum value of all characters with an odd index and multiply by 2
+            odd += ord(line[i]) * 2
         else:
-            even += ord(line[i])    #sum value of all characters with an even index
-    total = (odd + even)            #add the two sums
-    raw = (total // 21) + 205       #integer division of addition and add 205
-    return str(raw)[-1] + str(raw)[-2] #reverse last two digits of prior operation
+            #sum value of all characters with an even index
+            even += ord(line[i])
+    total = (odd + even)
+    raw = (total // 21) + 205
+    #reverse last two digits of prior operation
+    return str(raw)[-1] + str(raw)[-2]
 
 
 class Ev3line:
@@ -30,6 +42,11 @@ class Ev3line:
         self.LINE_ID = ''
 
     def _add_padding(self, variable):
+        """
+        Any attributes on any line have to be padded for checksum
+        :param variable:
+        :return:
+        """
         value = str(variable['value'])
         if variable['padding'] is self.NO_PADDING:
             return value
@@ -47,7 +64,9 @@ class Ev3line:
 
 
 class FileInformation(Ev3line):
-
+    """
+    A1 Record: HY3 line
+    """
     def __init__(self, date=''):
         self.LINE_ID = 'A102'
         self.line_id = {'value': self.LINE_ID, 'length': 3, 'padding': self.NO_PADDING}
@@ -66,6 +85,9 @@ class FileInformation(Ev3line):
 
 
 class MeetInformation(Ev3line):
+    """
+    B1 Record: HY3 line
+    """
     def __init__(self, title='', facility='', start_date='', end_date='', age_up_date=''):
         self.LINE_ID = 'B1'
         self.line_id = {'value': self.LINE_ID, 'length': 2, 'padding': self.NO_PADDING}
@@ -88,7 +110,9 @@ class MeetInformation(Ev3line):
 
 
 class ClubInformation(Ev3line):
-
+    """
+    C1 Record: HY3 line
+    """
     def __init__(self, club_id='', club_name=''):
         self.LINE_ID = 'C1'
         self.line_id = {'value': self.LINE_ID, 'length': 2, 'padding': self.NO_PADDING}
@@ -105,7 +129,9 @@ class ClubInformation(Ev3line):
 
 
 class SwimmerEntry(Ev3line):
-
+    """
+    D1 Record: HY3 line
+    """
     def __init__(self, gender='', event_swimmer_id='', surname='', first_name='', nickname='', uss_number='',
                  team_swimmer_id='', date_of_birth='', age=''):
         super(SwimmerEntry, self).__init__()
@@ -142,6 +168,9 @@ class SwimmerEntry(Ev3line):
 
 
 class EventEntry(Ev3line):
+    """
+    E1 Record: HY3 line
+    """
     def __init__(self, gender='', event_swimmer_id='', abbreviated_name='', gender_category='', distance='',
                  stroke='', age_lower='', age_upper='', fee='', event_number='', time1='',
                  course1='', time2='', course2=''):
@@ -160,14 +189,12 @@ class EventEntry(Ev3line):
         self.unknown2 = {'value': self.SPACE*4, 'length': 4, 'padding': self.NO_PADDING}
         self.fee = {'value': fee, 'length': 6, 'padding': self.LEFT_PADDING}
         self.event_number = {'value': event_number, 'length': 3, 'padding': self.LEFT_PADDING}
-    # TODO: check if needed and remove at later stage if possible.
         self.unknown3 = {'value': self.SPACE*2, 'length': 2, 'padding': self.NO_PADDING}
         self.time1 = {'value': time1, 'length': 7, 'padding': self.LEFT_PADDING}
         self.course1 = {'value': course1, 'length': 1, 'padding': self.LEFT_PADDING}
         self.unknown4 = {'value': self.SPACE, 'length': 1, 'padding': self.NO_PADDING}
         self.time2 = {'value': time2, 'length': 7, 'padding': self.LEFT_PADDING}
         self.course2 = {'value': course2, 'length': 1, 'padding': self.LEFT_PADDING}
-    # End of delete section
         self.end_padding = {'value': '', 'length': 68, 'padding': self.LEFT_PADDING}
 
     def as_line(self):
@@ -196,7 +223,9 @@ class EventEntry(Ev3line):
 
 
 class HY3file:
-
+    """
+    Build the HY3 entry file
+    """
     def __init__(self, gala_id, club_id):
         self.gala_id = gala_id
         self.club_id = club_id
@@ -208,17 +237,25 @@ class HY3file:
         self.add_checksums()
 
     def add_headers(self):
+        """
+        Add the records A,B,C
+        :return: Lines
+        """
         with Mongo() as db:
             gala = db.gala.find_one({'title': self.gala_id, 'club.id': self.club_id})
-        self.output_lines.append(FileInformation(strftime("%m%d%Y")).as_line())                 #A line
+        self.output_lines.append(FileInformation(strftime("%m%d%Y")).as_line())
         self.output_lines.append(MeetInformation(title=self.gala_id,
                                                  facility=gala['location'],
                                                  start_date=gala['date'].strftime("%m%d%Y"),
                                                  end_date=gala['end_date'].strftime("%m%d%Y"),
-                                                 age_up_date=gala['age_up_date'].strftime("%m%d%Y")).as_line())    #B line
-        self.output_lines.append(ClubInformation(self.club_id, gala['club']['name']).as_line()) #C line
+                                                 age_up_date=gala['age_up_date'].strftime("%m%d%Y")).as_line())
+        self.output_lines.append(ClubInformation(self.club_id, gala['club']['name']).as_line())
 
     def add_swimmers_with_entries(self):
+        """
+        Add E1 records
+        :return: Lines
+        """
         with Mongo() as db:
             swimmers_data = db.swimmers.find({'club_id': self.club_id})
             entries_data = db.entries.find({'gala_id': self.gala_id, 'club_id': self.club_id})
@@ -245,6 +282,9 @@ class HY3file:
                     self.output_lines.append(event_entry.as_line())
 
     def add_checksums(self):
+        """
+        Add computed checksum to end of record
+        """
         for i, line in enumerate(self.output_lines):
             self.output_lines[i] += checksum(line)
 
@@ -254,13 +294,3 @@ class HY3file:
             output += line + '\r\n'
         return output
 
-#for testing purposes
-def checksum_file(filename):
-    output = ''
-    with open(filename) as fd:
-        for line in fd:
-            line = line.rstrip('\n')[:-2]
-            line += checksum(line) + '\n'
-            output += line
-    with open('new_' + filename, 'w') as fd:
-        fd.write(output)

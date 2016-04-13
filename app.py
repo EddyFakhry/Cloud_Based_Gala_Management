@@ -1,3 +1,7 @@
+"""
+AUTHOR: EDDY FAKHRY
+DATE:   15/10/2016
+"""
 import ast
 import os
 import uuid
@@ -74,7 +78,10 @@ def _save_file(file):
 @app.route('/upload', methods=['GET', 'POST'])
 @check_admin_login
 def upload():
-
+    """
+    Admin page to upload mdb and zip
+    :return: upload_files.html
+    """
     if request.method == 'POST':
         if not "zip_file" in request.files:
             return "no zip file found"
@@ -91,8 +98,13 @@ def upload():
         return render_template('upload_files.html')
 
 
-
 def _load_data_from_files(mdb_file, zip_file):
+    """
+    Build the gala/club/swimmer object
+    :param mdb_file:
+    :param zip_file:
+    :return: gala_details.html
+    """
     try:
         o = Objectmaker(os.path.join(constants.UPLOAD_PATH, mdb_file), os.path.join(constants.UPLOAD_PATH, zip_file))
     except Exception as e:
@@ -115,10 +127,16 @@ def _load_data_from_files(mdb_file, zip_file):
 @app.route('/send/<club_id>/<gala_id>')
 @check_admin_login
 def send_emails(club_id, gala_id):
+    """
+    Split swimmers into those who have emails or those who don't
+    Send to to first list
+    Allow print forms for second list
+    :param club_id:
+    :param gala_id:
+    :return: sentemail.html
+    """
     with Mongo(db_config) as db:
-        #gala = db.gala.find_one({"title": gala_id, "club.id": club_id})
         swimmers = db.swimmers.find({"club_id": club_id})
-
     got_email = []
     no_email = []
     for swimmer in swimmers:
@@ -136,6 +154,11 @@ def send_emails(club_id, gala_id):
 
 @app.route('/form/<payload>')
 def form(payload):
+    """
+    This is where a swimmer enters preferences
+    :param payload:
+    :return: form.html
+    """
     decrypted_payload = link_generator.load_payload(payload)
     gala = decrypted_payload['gala_id']
     swimmer_id = decrypted_payload['swimmer_id']
@@ -152,10 +175,14 @@ def form(payload):
 @app.route('/form/external/<gala_id>')
 @check_admin_login
 def external_form(gala_id):
+    """
+    Manual form entry for swimmers with no email
+    :param gala_id:
+    :return: print_forms.html
+    """
     with Mongo(db_config) as db:
         gala = db.gala.find_one({'title': gala_id, "club.id":session['clubid']})
         swimmers = db.swimmers.find({"email" : None, "club_id":session['clubid'], "inactive":False})
-
     data = []
     for swimmer in swimmers:
         d = {
@@ -170,6 +197,14 @@ def external_form(gala_id):
 @app.route('/submit/<club_id>/<gala_id>/<swimmer_id>', methods=['POST'])
 @check_admin_or_swimmer
 def submit(club_id,gala_id, swimmer_id):
+    """
+    Retrieve and store heat entry details
+    Send confirmation
+    :param club_id:
+    :param gala_id:
+    :param swimmer_id:
+    :return: template
+    """
     if swimmer_id != session['swimmer']:
         return 'Error, invalid swimmer id detected'
     selected = request.form.getlist('selected')
@@ -200,6 +235,11 @@ def submit(club_id,gala_id, swimmer_id):
 @app.route('/download/<gala_id>')
 @check_admin_login
 def download_file(gala_id):
+    """
+    Download the entry file HY3
+    :param gala_id:
+    :return: confirmation
+    """
     file = HY3file(gala_id, session['clubid']).to_string()
     response = make_response(file)
     response.headers["Content-Disposition"] = "attachment; filename=" + gala_id + "_entries.HY3"
@@ -209,6 +249,11 @@ def download_file(gala_id):
 @app.route('/entries/<gala_id>')
 @check_admin_login
 def get_entries(gala_id):
+    """
+    Retrieve and display entries per gala/club id
+    :param gala_id:
+    :return: gala_entries.html|error
+    """
     with Mongo(db_config) as db:
         entries = list(db.entries.find({"gala_id": gala_id, "club_id" : session["clubid"]}))
         gala = db.gala.find_one({'title': gala_id, "club.id" : session["clubid"],'deleted':False})
@@ -219,7 +264,6 @@ def get_entries(gala_id):
                 if swimmer["swimmer_id"] == id:
                     return swimmer
             return None
-
         heats = []
         for heat in gala["heats"]:
             heat_with_swimmers = heat.copy()
@@ -237,6 +281,10 @@ def get_entries(gala_id):
 @app.route("/registration", methods=["POST", "GET"])
 @check_admin_login
 def registration():
+    """
+    Manual registration
+    :return: form.html|error
+    """
     if request.method == "GET":
         return render_template("manual_entry_form.html")
 
@@ -270,6 +318,10 @@ def registration():
 @app.route("/galas", methods=["GET"])
 @check_admin_login
 def galas():
+    """
+    Retrieve and display current galas
+    :return: galas.html
+    """
     with Mongo({}) as db:
         galas = list(db.gala.find({"club.id" : session["clubid"], 'deleted': False}))
     return render_template("galas.html", galas=galas)
@@ -278,6 +330,11 @@ def galas():
 @app.route("/delete/<gala>", methods=["GET"])
 @check_admin_login
 def delete_gala(gala):
+    """
+    Flag gala as deleted
+    :param gala:
+    :return: redirect to menu
+    """
     club = session['clubid']
     with Mongo(db_config) as db:
         db.gala.update_one({"title": gala,"club.id": club}, {'$set': {'deleted': True}})
@@ -285,6 +342,11 @@ def delete_gala(gala):
 
 
 def filter_heats(gala, swimmer):
+    """
+    :param gala:
+    :param swimmer:
+    :return: filtered_gala
+    """
     filtered_gala = gala.copy()
     filtered_gala["heats"] = []
     for heat in gala["heats"]:
@@ -300,6 +362,11 @@ def _is_eligible(gala_date, heat, swimmer):
 
 
 def get_gender(heat):
+    """
+    Different terminology between US and Ireland for gender - unify
+    :param heat:
+    :return: gender
+    """
     gender = heat['gender']
     if gender is 'B':
         return 'M'

@@ -1,3 +1,7 @@
+"""
+AUTHOR: EDDY FAKHRY
+DATE:   15/10/2016
+"""
 import os
 
 UPLOAD_PATH=os.path.join(os.path.dirname(os.path.abspath(__file__)),"temp")

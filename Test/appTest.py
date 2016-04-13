@@ -1,6 +1,8 @@
-import pytest
+"""
+AUTHOR: EDDY FAKHRY
+DATE:   15/10/2016
+"""
 
-from lib.mongo import Mongo
 from lib.email import Mailer
 from lib.linkgenerator import LinkGenerator
 import  datetime

@@ -1,7 +1,14 @@
+"""
+AUTHOR: EDDY FAKHRY
+DATE:   15/10/2016
+"""
 from datetime import datetime
 
-class GalaParser():
 
+class GalaParser():
+    """
+    Retrieve all relevant information about the gala event
+    """
     def __init__(self, header, body):
         self._header = header
         self._body = body
@@ -12,6 +19,9 @@ class GalaParser():
         self._parse_body()
 
     def _parse_header(self):
+        """
+        Parse first line of the EV3 file
+        """
         self.gala['title'] = self._header[0]
         self.gala['location'] = self._header[1]
         self.gala['date'] = datetime.strptime(self._header[2], '%m/%d/%Y')
@@ -20,6 +30,9 @@ class GalaParser():
         self.gala['deleted'] = False
 
     def _parse_body(self):
+        """
+        Parse all lines in the EV3 file other than the first one
+        """
         self.gala['heats'] = []
         for row in self._body:
             heat = {

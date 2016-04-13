@@ -1,5 +1,7 @@
-
-import os
+"""
+AUTHOR: EDDY FAKHRY
+DATE:   15/10/2016
+"""
 from flask_mail import Mail, Message
 
 _EMAIL_CONFIG = {
@@ -19,6 +21,12 @@ class Mailer:
         self.mail = Mail(app)
 
     def send_mail(self, recipient, subject, body, html=None):
+        """
+        :param recipient:
+        :param subject:
+        :param body:
+        :param html:
+        """
         msg = Message(subject, sender="confirm@gmail.com", recipients=[recipient])
         msg.body = body
         if html is not None:

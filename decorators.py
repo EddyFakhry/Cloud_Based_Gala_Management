@@ -1,3 +1,7 @@
+"""
+AUTHOR: EDDY FAKHRY
+DATE:   15/10/2016
+"""
 from functools import wraps
 from flask import redirect, url_for,session
 
@@ -12,6 +16,11 @@ def check_admin_login(func):
 
 
 def check_admin_or_swimmer(func):
+    """
+    Lower permission for swimmer entries
+    :param func:
+    :return: wrapped_function
+    """
     @wraps(func)
     def wrapped_function(*args, **kwargs):
         if 'username' in session or 'swimmer' in session:

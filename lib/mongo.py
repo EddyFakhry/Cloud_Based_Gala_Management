@@ -1,5 +1,8 @@
+"""
+AUTHOR: EDDY FAKHRY
+DATE:   15/10/2016
+"""
 import pymongo
-import constants
 
 class Mongo:
     def __init__(self,config={}):

@@ -1,14 +1,19 @@
+"""
+AUTHOR: EDDY FAKHRY
+DATE:   15/10/2016
+"""
 from .galaparser import GalaParser
 from .ev3utils import Ev3Reader
 from .mdbextractor import mdbextractor
-from pprint import pprint
 
 MDB_FILE = "test.mdb"
 ZIP_FILE = "MeetEvent.zip"
 
 
 class Objectmaker:
-
+    """
+    Construct complete gala/swimmers/club object
+    """
     def __init__(self, mdbfile, zipfile):
         self._mdbfile = mdbfile
         self._zipfile = zipfile
